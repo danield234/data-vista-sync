@@ -19,13 +19,20 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    console.log("Login attempt:", { email, password }); // Debugging log
+
     try {
+      // Log exact input for debugging
+      console.log(`Attempting login with email: ${email}, password: ${password}`);
+      
       await login(email, password);
+      
+      console.log("Login successful"); // Confirm successful login
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Full login error:", error);
       toast({
         title: "Authentication failed",
-        description: "Please check your credentials and try again.",
+        description: error instanceof Error ? error.message : "Please check your credentials and try again.",
         variant: "destructive",
       });
     } finally {
