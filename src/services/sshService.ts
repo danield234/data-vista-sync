@@ -49,7 +49,7 @@ export class SshDatabaseService {
       
       // Randomly fail sometimes to simulate connection issues
       if (Math.random() < 0.2) {
-        throw new Error("SSH connection failed");
+        throw new Error("SSH connection failed: Could not establish connection to the server. Please check your SSH credentials and server availability.");
       }
       
       this._isConnected = true;
@@ -58,7 +58,7 @@ export class SshDatabaseService {
     } catch (error) {
       this._isConnected = false;
       console.error("SSH connection error:", error);
-      throw new Error("Could not establish SSH connection to the server");
+      throw new Error(`SSH connection error: ${error instanceof Error ? error.message : 'Could not establish SSH connection to the server'}`);
     }
   }
 
@@ -71,7 +71,7 @@ export class SshDatabaseService {
 
   async fetchUsers(): Promise<User[]> {
     if (!this._isConnected) {
-      throw new Error("No active SSH connection");
+      throw new Error("No active SSH connection. Please connect to SSH first.");
     }
     
     console.log("Fetching users via SSH tunnel...");
@@ -82,16 +82,31 @@ export class SshDatabaseService {
       
       // Randomly fail sometimes to simulate database issues
       if (Math.random() < 0.1) {
-        throw new Error("Database query failed");
+        const errorTypes = [
+          "Database authentication failed. Please check your database credentials.",
+          "Database connection timed out. The database server might be down or unreachable.",
+          "Error executing query: Access denied for user.",
+          "Database 'new_iq_database' does not exist."
+        ];
+        const randomError = errorTypes[Math.floor(Math.random() * errorTypes.length)];
+        throw new Error(`Database error: ${randomError}`);
       }
       
       // This would be the actual database query in a real app
       // In this simulation, we're just returning empty data
       // The actual data will come from the server
-      return [];
+      
+      // In our simulation, let's throw an error if we get 0 users
+      // In a real app, this might be a valid scenario
+      const users: User[] = [];
+      if (users.length === 0) {
+        throw new Error("Database query returned 0 users. This could indicate a configuration issue or empty table.");
+      }
+      
+      return users;
     } catch (error) {
       console.error("Database query error:", error);
-      throw new Error("Failed to fetch users from database");
+      throw new Error(`Database query error: ${error instanceof Error ? error.message : 'Failed to fetch users from database'}`);
     }
   }
 }

@@ -59,7 +59,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       // Connect via SSH and fetch data
+      console.log("Starting SSH connection process...");
       await sshService.connect();
+      
+      console.log("SSH connected, fetching users...");
       const data = await sshService.fetchUsers();
       
       // Store in state and cache
@@ -75,6 +78,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      console.error("Sync error:", errorMessage);
       setError(errorMessage);
       toast({
         title: "Synchronization failed",
@@ -85,7 +89,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(false);
       // Always disconnect SSH when done
       if (sshService.isConnected) {
-        await sshService.disconnect();
+        try {
+          await sshService.disconnect();
+        } catch (e) {
+          console.error("Error during SSH disconnection:", e);
+        }
       }
     }
   }, [toast]);
