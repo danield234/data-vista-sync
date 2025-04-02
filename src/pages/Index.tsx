@@ -13,7 +13,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="text-center">
-        <h1 className="text-2xl font-bold mb-4">Redirecting...</h1>
+        <h1 className="text-2xl font-bold mb-4">Redirecting to Dashboard...</h1>
         <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
       </div>
     </div>

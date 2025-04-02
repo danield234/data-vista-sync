@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 
@@ -21,34 +20,25 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<{ email: string; name: string } | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // Initialize with a default user so authentication is automatic
+  const [user, setUser] = useState<{ email: string; name: string } | null>({ 
+    email: 'admin@example.com', 
+    name: 'Administrator' 
+  });
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  // Check for saved auth on component mount
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
-  }, []);
-
+  // Keep the login/logout methods for future use
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Hardcoded admin credentials for demo
-      if (email === 'admin@example.com' && password === 'admin') {
-        const userData = { email, name: 'Administrator' };
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-        toast({
-          title: "Authentication successful",
-          description: "Welcome to Data Vista Sync!",
-        });
-        return;
-      }
-      throw new Error('Invalid credentials');
+      const userData = { email, name: 'Administrator' };
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      toast({
+        title: "Authentication successful",
+        description: "Welcome to Data Vista Sync!",
+      });
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
