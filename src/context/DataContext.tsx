@@ -58,7 +58,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsDemoMode(false);
     
     try {
-      // Connect via SSH and fetch data
       console.log("Starting SSH connection process...");
       await sshService.connect();
       

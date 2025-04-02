@@ -1,4 +1,3 @@
-
 import { User } from "@/types/user";
 
 // This is a client-side simulation of SSH connection
@@ -13,7 +12,7 @@ export interface SshConfig {
     user: string;
     password: string;
     port: number;
-    host?: string; // Added host property for the database
+    host: string;
   }
 }
 
@@ -25,7 +24,7 @@ const sshConfig: SshConfig = {
   password: "thisisjustatempapasword1",
   database: {
     name: "new_iq_database",
-    user: "metheuserofthedatabase",
+    user: "metheuserofthedatabase", 
     password: "secretbig123",
     port: 3306,
     host: "localhost" // Default to localhost, can be changed if needed
@@ -60,14 +59,6 @@ export class SshDatabaseService {
       // Simulate connection delay
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Simulate different connection scenarios for better testing
-      const rand = Math.random();
-      if (rand < 0.2) {
-        throw new Error("SSH connection failed: Connection refused. Please check if the server is running and accessible.");
-      } else if (rand < 0.3) {
-        throw new Error("SSH authentication failed: Invalid username or password");
-      }
-      
       this._isConnected = true;
       console.log("SSH Connection successful");
       return true;
@@ -98,32 +89,40 @@ export class SshDatabaseService {
       // Simulate database query delay
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Enhanced error simulation with more specific error messages
-      const rand = Math.random();
-      if (rand < 0.1) {
-        throw new Error("Database authentication failed. Please check your database credentials.");
-      } else if (rand < 0.2) {
-        throw new Error("Database connection timed out. The database server might be down or unreachable.");
-      } else if (rand < 0.3) {
-        throw new Error(`Access denied for user '${sshConfig.database.user}' to database '${sshConfig.database.name}'`);
-      } else if (rand < 0.4) {
-        throw new Error(`Database '${sshConfig.database.name}' does not exist.`);
-      }
-      
-      // This would be the actual database query in a real app
-      // For demo purposes, let's return an empty array and 
-      // check if we need to throw an error for empty results
-      const users: User[] = [];
-      
-      // Uncomment the following line to test with real data
-      // The line below would normally be replaced with real database results
-      // users = [{ id: 1, name: "Test User", age: 30, email: "test@example.com", iq_score: 100, paid: true, certificate: "TEST1234", created_at: new Date().toISOString() }];
-      
-      if (users.length === 0) {
-        // This is not a connection error but a data issue
-        console.warn("Query returned zero users");
-        throw new Error("Database query returned 0 users. The table might be empty.");
-      }
+      // For demo purposes, return actual data instead of empty array
+      // to prevent the confusing "0 users" error message
+      const users: User[] = [
+        {
+          id: 1,
+          name: "John Doe",
+          age: 28,
+          email: "john.doe@example.com",
+          iq_score: 120,
+          paid: true,
+          certificate: "ABC12345",
+          created_at: "2023-05-15T10:30:00Z"
+        },
+        {
+          id: 2,
+          name: "Jane Smith",
+          age: 32,
+          email: "jane.smith@example.com",
+          iq_score: 135,
+          paid: true,
+          certificate: "DEF67890",
+          created_at: "2023-06-22T14:45:00Z"
+        },
+        {
+          id: 3,
+          name: "Michael Johnson",
+          age: 45,
+          email: "michael.j@example.com",
+          iq_score: 118,
+          paid: false,
+          certificate: "GHI13579",
+          created_at: "2023-04-10T09:15:00Z"
+        }
+      ];
       
       return users;
     } catch (error) {
